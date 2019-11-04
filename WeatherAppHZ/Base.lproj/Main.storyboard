@@ -84,6 +84,12 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
+                    <connections>
+                        <outlet property="locationLabel" destination="UF8-sN-tCe" id="sEC-Xe-pXO"/>
+                        <outlet property="tempMaxLabel" destination="ltN-SP-xwK" id="12a-d1-8wT"/>
+                        <outlet property="tempMinLabel" destination="QFK-4K-TT9" id="pSF-yD-qvZ"/>
+                        <outlet property="temperatureLabel" destination="Egp-hk-JC9" id="P4V-ks-WOX"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
