@@ -20,6 +20,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     @IBOutlet weak var tempMaxLabel: UILabel!
     
     let apiKey = "c70ff4cc260c1075bbfb6849caa1ad29"
+    //Default Values
     var lat = 11.34
     var lon = 104.33
     let locationManager = CLLocationManager()
@@ -46,8 +47,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         Alamofire.request("http://api.openweathermap.org/data/2.5/weather?lat=\(lat)&lon=\(lon)&appid=\(apiKey)&units=metric").responseJSON {
             response in
             if let responseStr = response.result.value {
+                
                 let jsonResponse = JSON(responseStr)
-                //let jsonweather = jsonResponse["weather"].array![0]
                 let jsonTemp = jsonResponse["main"]
                 
                 self.locationLabel.text = jsonResponse["name"].stringValue
