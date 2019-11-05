@@ -22,6 +22,12 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     @IBOutlet weak var minLabel: UILabel!
     @IBOutlet weak var tempLabel: UILabel!
     @IBOutlet weak var maxLabel: UILabel!
+    @IBOutlet weak var iconLabel: UIImageView!
+    @IBOutlet weak var specialBG: UIImageView!
+    
+    
+
+    
     
     @IBAction func changeUnit(_ sender: UISwitch) {
         if sender.isOn{
@@ -57,6 +63,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
             locationManager.delegate = self
             locationManager.desiredAccuracy = kCLLocationAccuracyBest
             locationManager.startUpdatingLocation()
+            applyEffect()
         }
     }
     
@@ -71,16 +78,38 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
                 
                 let jsonResponse = JSON(responseStr)
                 let jsonTemp = jsonResponse["main"]
+               // let jsonWeather = jsonResponse["weather"].array![0]
+               // let iconName = jsonWeather["icon"].stringValue
+                
                 
                 self.locationLabel.text = jsonResponse["name"].stringValue
                 self.temperatureLabel.text = "\(Int(round(jsonTemp["temp"].doubleValue)))"
                 self.tempMinLabel.text = "\(Int(round(jsonTemp["temp_min"].doubleValue)))"
                 self.tempMaxLabel.text = "\(Int(round(jsonTemp["temp_max"].doubleValue)))"
+                //self.iconLabel.image = URL(string: "http://openweathermap.org/img/wn/\(iconName)@2x.png")!
+                
             }
         }
-        
+        //self.locationManager.stopUpdatingLocation()
     }
     
+    func applyEffect(){
+        specialEffect(view: specialBG, intensity: 30)
+    }
     
+    func specialEffect(view: UIView, intensity: Double){
+        let horizontalMotion = UIInterpolatingMotionEffect(keyPath: "center.x", type: .tiltAlongHorizontalAxis)
+        horizontalMotion.minimumRelativeValue = -intensity
+        horizontalMotion.maximumRelativeValue = intensity
+        
+        let verticalMotion = UIInterpolatingMotionEffect(keyPath: "center.y", type: .tiltAlongVerticalAxis)
+        verticalMotion.minimumRelativeValue = -intensity
+        verticalMotion.maximumRelativeValue = intensity
+        
+        let movement = UIMotionEffectGroup()
+        movement.motionEffects = [horizontalMotion, verticalMotion]
+        
+        view.addMotionEffect(movement)
+    }
 }
 
