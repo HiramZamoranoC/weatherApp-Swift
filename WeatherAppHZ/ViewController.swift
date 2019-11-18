@@ -8,108 +8,96 @@
 
 import Foundation
 import UIKit
-import Alamofire
-import SwiftyJSON
-import CoreLocation
 
-class ViewController: UIViewController, CLLocationManagerDelegate {
+class ViewController: UIViewController {
     
     @IBOutlet weak var locationLabel: UILabel!
     @IBOutlet weak var temperatureLabel: UILabel!
     @IBOutlet weak var tempMinLabel: UILabel!
     @IBOutlet weak var tempMaxLabel: UILabel!
-    @IBOutlet weak var changeUnit: UISwitch!
     @IBOutlet weak var minLabel: UILabel!
     @IBOutlet weak var tempLabel: UILabel!
     @IBOutlet weak var maxLabel: UILabel!
     @IBOutlet weak var iconLabel: UIImageView!
     @IBOutlet weak var specialBG: UIImageView!
+    @IBOutlet weak var changeUnit: UISwitch!
     
+    private let apiController = APIController()
     
-
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        applyEffect()
+    }
     
-    
+    @IBAction func reloadButton(_ sender: Any) {
+        getWeather()
+        
+    }
     @IBAction func changeUnit(_ sender: UISwitch) {
-        if sender.isOn{
-            unit = "metric"
+        if sender.isOn {
             self.tempLabel.text = "℃"
             self.minLabel.text = "℃"
             self.maxLabel.text = "℃"
             
-        }
-        else{
-            unit = "imperial"
+        } else {
             self.tempLabel.text = "℉"
             self.minLabel.text = "℉"
             self.maxLabel.text = "℉"
         }
     }
     
-    
-    let apiKey = "c70ff4cc260c1075bbfb6849caa1ad29"
-    //Default Values
-    var lat = 11.34
-    var lon = 104.33
-    let locationManager = CLLocationManager()
-    var unit = "metric"
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Do any additional setup after loading the view.
-        
-        locationManager.requestWhenInUseAuthorization()
-        
-        if(CLLocationManager.locationServicesEnabled()){
-            locationManager.delegate = self
-            locationManager.desiredAccuracy = kCLLocationAccuracyBest
-            locationManager.startUpdatingLocation()
-            applyEffect()
-        }
-    }
-    
-    
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        let location = locations[0]
-        lat = location.coordinate.latitude
-        lon = location.coordinate.longitude
-        Alamofire.request("http://api.openweathermap.org/data/2.5/weather?lat=\(lat)&lon=\(lon)&appid=\(apiKey)&units=\(unit)").responseJSON {
-            response in
-            if let responseStr = response.result.value {
+}
+
+extension ViewController {
+    private func getWeather() {
+        apiController.getWeather() {(weather, error) in
+            if let error = error {
+                print("Error: \(error.localizedDescription)")
+                return
+            }
+            guard let weather = weather else { return }
+            print("Weather Object:")
+            print(weather.icon)
+            DispatchQueue.main.async { // Correct
                 
-                let jsonResponse = JSON(responseStr)
-                let jsonTemp = jsonResponse["main"]
-               // let jsonWeather = jsonResponse["weather"].array![0]
-               // let iconName = jsonWeather["icon"].stringValue
+                self.locationLabel.text = weather.name
+                if let value = weather.main.temperature {
+                    self.temperatureLabel.text = String(Int(round(value)))
+                } else {
+                    self.temperatureLabel.text = "Free"
+                }
                 
+                if let value = weather.main.temperatureMin {
+                    self.tempMinLabel.text = String(Int(round(value)))
+                } else {
+                    self.tempMinLabel.text = "Free"
+                }
                 
-                self.locationLabel.text = jsonResponse["name"].stringValue
-                self.temperatureLabel.text = "\(Int(round(jsonTemp["temp"].doubleValue)))"
-                self.tempMinLabel.text = "\(Int(round(jsonTemp["temp_min"].doubleValue)))"
-                self.tempMaxLabel.text = "\(Int(round(jsonTemp["temp_max"].doubleValue)))"
-                //self.iconLabel.image = URL(string: "http://openweathermap.org/img/wn/\(iconName)@2x.png")!
-                
+                if let value = weather.main.temperatureMax {
+                    self.tempMaxLabel.text = String(Int(round(value)))
+                } else {
+                    self.tempMaxLabel.text = "Free"
+                }
             }
         }
-        //self.locationManager.stopUpdatingLocation()
     }
     
     func applyEffect(){
-        specialEffect(view: specialBG, intensity: 30)
-    }
+          specialEffect(view: specialBG, intensity: 30)
+      }
     
     func specialEffect(view: UIView, intensity: Double){
-        let horizontalMotion = UIInterpolatingMotionEffect(keyPath: "center.x", type: .tiltAlongHorizontalAxis)
-        horizontalMotion.minimumRelativeValue = -intensity
-        horizontalMotion.maximumRelativeValue = intensity
-        
-        let verticalMotion = UIInterpolatingMotionEffect(keyPath: "center.y", type: .tiltAlongVerticalAxis)
-        verticalMotion.minimumRelativeValue = -intensity
-        verticalMotion.maximumRelativeValue = intensity
-        
-        let movement = UIMotionEffectGroup()
-        movement.motionEffects = [horizontalMotion, verticalMotion]
-        
-        view.addMotionEffect(movement)
-    }
+         let horizontalMotion = UIInterpolatingMotionEffect(keyPath: "center.x", type: .tiltAlongHorizontalAxis)
+         horizontalMotion.minimumRelativeValue = -intensity
+         horizontalMotion.maximumRelativeValue = intensity
+         
+         let verticalMotion = UIInterpolatingMotionEffect(keyPath: "center.y", type: .tiltAlongVerticalAxis)
+         verticalMotion.minimumRelativeValue = -intensity
+         verticalMotion.maximumRelativeValue = intensity
+         
+         let movement = UIMotionEffectGroup()
+         movement.motionEffects = [horizontalMotion, verticalMotion]
+         
+         view.addMotionEffect(movement)
+     }
 }
-
