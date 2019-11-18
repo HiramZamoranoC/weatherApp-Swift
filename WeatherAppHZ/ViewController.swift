@@ -27,12 +27,38 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         applyEffect()
+        getWeather()
     }
     
     @IBAction func reloadButton(_ sender: Any) {
         getWeather()
-        
     }
+    
+}
+
+
+extension ViewController {
+    private func getWeather() {
+        apiController.getWeather {(weather, error) in
+            if let error = error {
+                print("Error: \(error.localizedDescription)")
+                return
+            }
+            guard let weather = weather else { return }
+            print("***************")
+            print(weather)
+            print("***************")
+            DispatchQueue.main.async { // Correct
+                
+                self.iconLabel.image = UIImage(named: weather.icon[0].icon ?? "null")
+                self.locationLabel.text = weather.name
+                self.temperatureLabel.text = String(Int(round(weather.main.temperature ?? 0)))
+                self.tempMinLabel.text = String(Int(round(weather.main.temperatureMin ?? 0)))
+                self.tempMaxLabel.text = String(Int(round(weather.main.temperatureMax ?? 0)))
+            }
+        }
+    }
+    
     @IBAction func changeUnit(_ sender: UISwitch) {
         if sender.isOn {
             self.tempLabel.text = "℃"
@@ -46,58 +72,7 @@ class ViewController: UIViewController {
         }
     }
     
-}
-
-extension ViewController {
-    private func getWeather() {
-        apiController.getWeather() {(weather, error) in
-            if let error = error {
-                print("Error: \(error.localizedDescription)")
-                return
-            }
-            guard let weather = weather else { return }
-            print("Weather Object:")
-            print(weather.icon)
-            DispatchQueue.main.async { // Correct
-                
-                self.locationLabel.text = weather.name
-                if let value = weather.main.temperature {
-                    self.temperatureLabel.text = String(Int(round(value)))
-                } else {
-                    self.temperatureLabel.text = "Free"
-                }
-                
-                if let value = weather.main.temperatureMin {
-                    self.tempMinLabel.text = String(Int(round(value)))
-                } else {
-                    self.tempMinLabel.text = "Free"
-                }
-                
-                if let value = weather.main.temperatureMax {
-                    self.tempMaxLabel.text = String(Int(round(value)))
-                } else {
-                    self.tempMaxLabel.text = "Free"
-                }
-            }
-        }
+    func applyEffect() {
+        specialEffect(view: specialBG, intensity: 30)
     }
-    
-    func applyEffect(){
-          specialEffect(view: specialBG, intensity: 30)
-      }
-    
-    func specialEffect(view: UIView, intensity: Double){
-         let horizontalMotion = UIInterpolatingMotionEffect(keyPath: "center.x", type: .tiltAlongHorizontalAxis)
-         horizontalMotion.minimumRelativeValue = -intensity
-         horizontalMotion.maximumRelativeValue = intensity
-         
-         let verticalMotion = UIInterpolatingMotionEffect(keyPath: "center.y", type: .tiltAlongVerticalAxis)
-         verticalMotion.minimumRelativeValue = -intensity
-         verticalMotion.maximumRelativeValue = intensity
-         
-         let movement = UIMotionEffectGroup()
-         movement.motionEffects = [horizontalMotion, verticalMotion]
-         
-         view.addMotionEffect(movement)
-     }
 }
