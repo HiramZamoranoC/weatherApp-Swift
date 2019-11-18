@@ -36,7 +36,6 @@ class ViewController: UIViewController {
     
 }
 
-
 extension ViewController {
     private func getWeather() {
         apiController.getWeather {(weather, error) in
@@ -48,7 +47,7 @@ extension ViewController {
             print("***************")
             print(weather)
             print("***************")
-            DispatchQueue.main.async { // Correct
+            DispatchQueue.main.async {
                 
                 self.iconLabel.image = UIImage(named: weather.icon[0].icon ?? "null")
                 self.locationLabel.text = weather.name
@@ -61,11 +60,15 @@ extension ViewController {
     
     @IBAction func changeUnit(_ sender: UISwitch) {
         if sender.isOn {
+            getWeather()
             self.tempLabel.text = "℃"
             self.minLabel.text = "℃"
             self.maxLabel.text = "℃"
             
         } else {
+            self.temperatureLabel.text = String(celsiusToFahrenheit(tempInC: (Int(temperatureLabel.text ?? "nil")!)))
+            self.tempMinLabel.text = String(celsiusToFahrenheit(tempInC: (Int(tempMinLabel.text ?? "nil")!)))
+            self.tempMaxLabel.text = String(celsiusToFahrenheit(tempInC: (Int(tempMaxLabel.text ?? "nil")!)))
             self.tempLabel.text = "℉"
             self.minLabel.text = "℉"
             self.maxLabel.text = "℉"
