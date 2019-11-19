@@ -8,8 +8,9 @@
 
 import Foundation
 import UIKit
+import CoreLocation
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, CLLocationManagerDelegate {
     
     @IBOutlet weak var locationLabel: UILabel!
     @IBOutlet weak var temperatureLabel: UILabel!
@@ -23,14 +24,20 @@ class ViewController: UIViewController {
     @IBOutlet weak var changeUnit: UISwitch!
     
     private let apiController = APIController()
-    
+    let locationManager = CLLocationManager()
     override func viewDidLoad() {
         super.viewDidLoad()
+        Location.sharedInstance.setUpLocation()
         applyEffect()
-        getWeather()
+//        getWeather()
+        
     }
     
     @IBAction func reloadButton(_ sender: Any) {
+        self.changeUnit.isOn = true
+        self.tempLabel.text = "℃"
+        self.minLabel.text = "℃"
+        self.maxLabel.text = "℃"
         getWeather()
     }
     
