@@ -24,7 +24,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     @IBOutlet weak var changeUnit: UISwitch!
     
     private let apiManager = APIManager()
-    let locationManager = CLLocationManager()
+    let functions = Function()
     override func viewDidLoad() {
         super.viewDidLoad()
         LocationHandler.sharedInstance.setUpLocation()
@@ -47,11 +47,11 @@ extension ViewController {
             print("***************")
             DispatchQueue.main.async {
                 
-//                self.iconLabel.image = UIImage(named: weather.icon[0].icon ?? "null")
-//                self.locationLabel.text = weather.name
-//                self.temperatureLabel.text = String(Int(round(weather.main.temperature ?? 0)))
-//                self.tempMinLabel.text = String(Int(round(weather.main.temperatureMin ?? 0)))
-//                self.tempMaxLabel.text = String(Int(round(weather.main.temperatureMax ?? 0)))
+                //                self.iconLabel.image = UIImage(named: weather.icon[0].icon ?? "null")
+                self.locationLabel.text = weather.name
+                self.temperatureLabel.text = String(Int(round(weather.temperature ?? 0)))
+                self.tempMinLabel.text = String(Int(round(weather.temperatureMin ?? 0)))
+                self.tempMaxLabel.text = String(Int(round(weather.temperatureMax ?? 0)))
             }
         }
     }
@@ -64,9 +64,9 @@ extension ViewController {
             self.maxLabel.text = "℃"
             
         } else {
-            self.temperatureLabel.text = String(celsiusToFahrenheit(tempInC: (Int(temperatureLabel.text ?? "nil")!)))
-            self.tempMinLabel.text = String(celsiusToFahrenheit(tempInC: (Int(tempMinLabel.text ?? "nil")!)))
-            self.tempMaxLabel.text = String(celsiusToFahrenheit(tempInC: (Int(tempMaxLabel.text ?? "nil")!)))
+            self.temperatureLabel.text = String(functions.celsiusToFahrenheit(tempInC: (Int(temperatureLabel.text ?? "nil")!)))
+            self.tempMinLabel.text = String(functions.celsiusToFahrenheit(tempInC: (Int(tempMinLabel.text ?? "nil")!)))
+            self.tempMaxLabel.text = String(functions.celsiusToFahrenheit(tempInC: (Int(tempMaxLabel.text ?? "nil")!)))
             self.tempLabel.text = "℉"
             self.minLabel.text = "℉"
             self.maxLabel.text = "℉"
@@ -82,6 +82,6 @@ extension ViewController {
     }
     
     func applyEffect() {
-        specialEffect(view: specialBG, intensity: 30)
+        functions.specialEffect(view: specialBG, intensity: 30)
     }
 }

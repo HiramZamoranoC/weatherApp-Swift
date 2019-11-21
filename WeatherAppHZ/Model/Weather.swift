@@ -33,7 +33,7 @@ struct Weather: Decodable {
     init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: WeatherKeys.self)
         self.name = try values.decode(String.self, forKey: .name)
-
+        
         if let weatherIcon = try? values.nestedContainer(keyedBy: WeatherIconKeys.self, forKey: .weatherIcon) {
             self.icon = try weatherIcon.decode(String.self, forKey: .icon)
         }

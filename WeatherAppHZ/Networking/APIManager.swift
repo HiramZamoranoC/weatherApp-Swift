@@ -15,11 +15,11 @@ class APIManager {
     fileprivate let versionAPI = "2.5"
     fileprivate let typeAPI = "weather"
     fileprivate let apiKey = "c70ff4cc260c1075bbfb6849caa1ad29"
-
+    
     func getWeather(completion: @escaping (_ weather: Weather?, _ error: Error?) -> Void) {
         let URLPath = "\(baseURL)/\(versionAPI)/\(typeAPI)?lat=\(LocationHandler.sharedInstance.latitude!)&lon=\(LocationHandler.sharedInstance.longitude!)&appid=\(apiKey)&units=metric"
         getJSONFromURL(urlString: URLPath) { (data, error) in
-
+            
             guard let data = data, error == nil else {
                 print("Error, Failed to get data")
                 return completion(nil, error)

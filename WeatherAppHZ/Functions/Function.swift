@@ -9,27 +9,29 @@
 import Foundation
 import UIKit
 
-func specialEffect(view: UIView, intensity: Double) {
-    let horizontalMotion = UIInterpolatingMotionEffect(keyPath: "center.x", type: .tiltAlongHorizontalAxis)
-    horizontalMotion.minimumRelativeValue = -intensity
-    horizontalMotion.maximumRelativeValue = intensity
+class Function {
+    func specialEffect(view: UIView, intensity: Double) {
+        let horizontalMotion = UIInterpolatingMotionEffect(keyPath: "center.x", type: .tiltAlongHorizontalAxis)
+        horizontalMotion.minimumRelativeValue = -intensity
+        horizontalMotion.maximumRelativeValue = intensity
+        
+        let verticalMotion = UIInterpolatingMotionEffect(keyPath: "center.y", type: .tiltAlongVerticalAxis)
+        verticalMotion.minimumRelativeValue = -intensity
+        verticalMotion.maximumRelativeValue = intensity
+        
+        let movement = UIMotionEffectGroup()
+        movement.motionEffects = [horizontalMotion, verticalMotion]
+        
+        view.addMotionEffect(movement)
+    }
     
-    let verticalMotion = UIInterpolatingMotionEffect(keyPath: "center.y", type: .tiltAlongVerticalAxis)
-    verticalMotion.minimumRelativeValue = -intensity
-    verticalMotion.maximumRelativeValue = intensity
+    func celsiusToFahrenheit(tempInC: Int) -> Int {
+        let fahrenheit = (tempInC * 9/5) + 32
+        return fahrenheit as Int
+    }
     
-    let movement = UIMotionEffectGroup()
-    movement.motionEffects = [horizontalMotion, verticalMotion]
-    
-    view.addMotionEffect(movement)
-}
-
-func celsiusToFahrenheit(tempInC: Int) -> Int {
-    let fahrenheit = (tempInC * 9/5) + 32
-    return fahrenheit as Int
-}
-
-func fahrenheitToCelsius(tempInF: Int) -> Int {
-    let celsius = (tempInF - 32) * (5/9)
-    return celsius as Int
+    func fahrenheitToCelsius(tempInF: Int) -> Int {
+        let celsius = (tempInF - 32) * (5/9)
+        return celsius as Int
+    }
 }
