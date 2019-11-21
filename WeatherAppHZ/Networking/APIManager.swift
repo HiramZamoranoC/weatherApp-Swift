@@ -9,18 +9,17 @@
 import Foundation
 import CoreLocation
 
-class APIController {
+class APIManager {
     
     fileprivate let baseURL = "http://api.openweathermap.org/data"
     fileprivate let versionAPI = "2.5"
     fileprivate let typeAPI = "weather"
     fileprivate let apiKey = "c70ff4cc260c1075bbfb6849caa1ad29"
-//    fileprivate let latitude = 29.1026
-//    fileprivate let longitude = -110.97732
-   
+
     func getWeather(completion: @escaping (_ weather: Weather?, _ error: Error?) -> Void) {
-        let URLPath = "\(baseURL)/\(versionAPI)/\(typeAPI)?lat=\(Location.sharedInstance.latitude!)&lon=\(Location.sharedInstance.longitude!)&appid=\(apiKey)&units=metric"
+        let URLPath = "\(baseURL)/\(versionAPI)/\(typeAPI)?lat=\(LocationHandler.sharedInstance.latitude!)&lon=\(LocationHandler.sharedInstance.longitude!)&appid=\(apiKey)&units=metric"
         getJSONFromURL(urlString: URLPath) { (data, error) in
+
             guard let data = data, error == nil else {
                 print("Error, Failed to get data")
                 return completion(nil, error)
@@ -36,7 +35,7 @@ class APIController {
     }
 }
 
-extension APIController {
+extension APIManager {
     private func getJSONFromURL(urlString: String, completion: @escaping (_ data: Data?, _ error: Error?) -> Void) {
         guard let url = URL(string: urlString) else {
             print("Error, cannot create URL")
@@ -53,6 +52,7 @@ extension APIController {
                 return completion(nil, error)
             }
             completion(responseData, nil)
+            
         }
         task.resume()
     }

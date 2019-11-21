@@ -23,29 +23,20 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     @IBOutlet weak var specialBG: UIImageView!
     @IBOutlet weak var changeUnit: UISwitch!
     
-    private let apiController = APIController()
+    private let apiManager = APIManager()
     let locationManager = CLLocationManager()
     override func viewDidLoad() {
         super.viewDidLoad()
-        Location.sharedInstance.setUpLocation()
+        LocationHandler.sharedInstance.setUpLocation()
         applyEffect()
-//        getWeather()
+        //        getWeather()
         
     }
-    
-    @IBAction func reloadButton(_ sender: Any) {
-        self.changeUnit.isOn = true
-        self.tempLabel.text = "℃"
-        self.minLabel.text = "℃"
-        self.maxLabel.text = "℃"
-        getWeather()
-    }
-    
 }
 
 extension ViewController {
     private func getWeather() {
-        apiController.getWeather {(weather, error) in
+        apiManager.getWeather {(weather, error) in
             if let error = error {
                 print("Error: \(error.localizedDescription)")
                 return
@@ -56,11 +47,11 @@ extension ViewController {
             print("***************")
             DispatchQueue.main.async {
                 
-                self.iconLabel.image = UIImage(named: weather.icon[0].icon ?? "null")
-                self.locationLabel.text = weather.name
-                self.temperatureLabel.text = String(Int(round(weather.main.temperature ?? 0)))
-                self.tempMinLabel.text = String(Int(round(weather.main.temperatureMin ?? 0)))
-                self.tempMaxLabel.text = String(Int(round(weather.main.temperatureMax ?? 0)))
+//                self.iconLabel.image = UIImage(named: weather.icon[0].icon ?? "null")
+//                self.locationLabel.text = weather.name
+//                self.temperatureLabel.text = String(Int(round(weather.main.temperature ?? 0)))
+//                self.tempMinLabel.text = String(Int(round(weather.main.temperatureMin ?? 0)))
+//                self.tempMaxLabel.text = String(Int(round(weather.main.temperatureMax ?? 0)))
             }
         }
     }
@@ -80,6 +71,14 @@ extension ViewController {
             self.minLabel.text = "℉"
             self.maxLabel.text = "℉"
         }
+    }
+    
+    @IBAction func reloadButton(_ sender: Any) {
+        self.changeUnit.isOn = true
+        self.tempLabel.text = "℃"
+        self.minLabel.text = "℃"
+        self.maxLabel.text = "℃"
+        getWeather()
     }
     
     func applyEffect() {
